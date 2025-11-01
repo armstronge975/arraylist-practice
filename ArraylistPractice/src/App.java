@@ -3,33 +3,41 @@ import java.util.InputMismatchException;
 import java.util.Scanner;
 
 public class App {
-    public static void main(String[] args) throws Exception {
-        ArrayList<Integer> numbers = new ArrayList<Integer>();
-        Scanner scanner = new Scanner(System.in);
-        int inputNum = 0;
+    // variables that will be available in all methods due to scope
+    // final means this variable's value is constant and cannot change
+    private static final int INITIAL_ARRAY_CAPACITY = 10;
+    private static ArrayList<Integer> numbers = new ArrayList<>(INITIAL_ARRAY_CAPACITY);
 
-        try {
-            // Part 1: prompt user to enter numbers, which will be stored in arraylist
-            // conditional value (when to stop) is 0
-            System.out.println("Enter in one number at a time and press enter.\n" +
-                "Type in 0 and press enter when done.");
-            do {
-                inputNum = scanner.nextInt();
-                if (inputNum != 0) {
-                    numbers.add(inputNum);
-                }
-                System.out.println("Your current arraylist: " + numbers.toString());
-            } while (inputNum != 0);
-        // use specific exception types in multiple catch blocks to customize error messages & processing
-        } catch (InputMismatchException e) {
-            System.out.println("Error: Attempted to add non-integer value to arraylist");
-        // default exception used if above catch block(s) don't match the caught error
+    public static void main(String[] args) {
+        // Using try-with-resources to automatically close scanner
+        try (Scanner scanner = new Scanner(System.in)) {
+            processUserInput(scanner); // instructions step 1
+        } catch (InputMismatchException e) { // Use multiple catch blocks to customize error messages
+            // Using System.err for errors
+            System.err.println("Error: Attempted to add non-integer value to arraylist");
         } catch (Exception e) {
+            System.err.println("Unexpected error occurred: " + e.getMessage());
             e.printStackTrace();
         }
-        // finally block allows us to automatically 
-        finally {
-            scanner.close();
-        }
+    }
+
+    /**
+     * Processes user input and adds valid numbers to the list
+     * @param scanner Scanner object for reading user input
+     * @param numbers List to store the input numbers
+     */
+    private static void processUserInput(Scanner scanner) {
+        final int EXIT_VALUE = 0;
+        int inputNum;
+
+        System.out.println("Enter in one number at a time and press enter.\n" +
+        "Type in 0 and press enter when done.");     
+        do {
+            inputNum = scanner.nextInt();
+            if (inputNum != EXIT_VALUE) {
+                numbers.add(inputNum);
+                System.out.println("Your current arraylist: " + numbers);
+            }
+        } while (inputNum != EXIT_VALUE);
     }
 }
